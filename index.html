@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Dog Run — Ultimate Endless Adventure</title>
+    <meta name="description" content="Run. Dodge. Bark. Survive. An epic 3D endless runner adventure!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Main Menu -->
+    <div id="mainMenu" class="screen active">
+        <div class="menu-top-bar">
+            <button id="settingsBtn" class="icon-btn">⚙️</button>
+            <div class="currency-display">
+                <span class="currency bones-display">🦴 <span id="totalBones">0</span></span>
+                <span class="currency gems-display">💎 <span id="totalGems">50</span></span>
+            </div>
+        </div>
+        <div class="menu-center">
+            <h1 class="game-title">
+                <span class="title-paw">🐾</span>
+                <span class="title-text">DOG RUN</span>
+                <span class="title-paw">🐾</span>
+            </h1>
+            <p class="subtitle">Run. Dodge. Bark. Survive.</p>
+            <div class="dog-preview" id="menuDogPreview"></div>
+            <p class="dog-name-display" id="currentDogName">Buddy</p>
+        </div>
+        <div class="menu-buttons">
+            <button id="playBtn" class="btn btn-play">
+                <span class="btn-icon">▶</span> PLAY
+            </button>
+            <div class="btn-row">
+                <button id="dogsBtn" class="btn btn-secondary">🐕 Dogs</button>
+                <button id="themesBtn" class="btn btn-secondary">🌍 Themes</button>
+            </div>
+        </div>
+        <div class="menu-footer">
+            <p class="author-credit">By Sourav Mahapatra</p>
+        </div>
+    </div>
+
+    <!-- Dog Selection -->
+    <div id="dogSelect" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" data-target="mainMenu">← Back</button>
+            <h2>Choose Your Dog</h2>
+            <div class="currency-display">
+                <span class="currency bones-display">🦴 <span class="bones-count">0</span></span>
+            </div>
+        </div>
+        <div class="dog-grid" id="dogGrid"></div>
+    </div>
+
+    <!-- Theme Selection -->
+    <div id="themeSelect" class="screen">
+        <div class="screen-header">
+            <button class="back-btn" data-target="mainMenu">← Back</button>
+            <h2>Select Theme</h2>
+        </div>
+        <div class="theme-grid" id="themeGrid"></div>
+    </div>
+
+    <!-- Game HUD -->
+    <div id="gameHUD" class="screen">
+        <div class="hud-top">
+            <div class="hud-left">
+                <div class="hud-bones">🦴 <span id="hudBones">0</span></div>
+                <div class="hud-combo" id="hudCombo"></div>
+            </div>
+            <div class="hud-center">
+                <div class="hud-score" id="hudScore">0</div>
+            </div>
+            <div class="hud-right">
+                <div class="hud-distance"><span id="hudDistance">0</span>m</div>
+            </div>
+        </div>
+        <button id="pauseBtn" class="icon-btn pause-btn">⏸️</button>
+        <div class="hud-powerups" id="hudPowerups"></div>
+        <div class="hud-bottom">
+            <div class="speed-indicator" id="speedIndicator">
+                <div class="speed-bar" id="speedBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pause Menu -->
+    <div id="pauseMenu" class="screen overlay">
+        <div class="pause-card">
+            <h2>PAUSED</h2>
+            <div class="pause-stats">
+                <p>Distance: <span id="pauseDistance">0</span>m</p>
+                <p>Bones: <span id="pauseBones">0</span></p>
+            </div>
+            <button id="resumeBtn" class="btn btn-play">▶ Resume</button>
+            <button id="restartBtn" class="btn btn-secondary">🔄 Restart</button>
+            <button id="quitBtn" class="btn btn-danger">🏠 Quit</button>
+        </div>
+    </div>
+
+    <!-- Game Over -->
+    <div id="gameOver" class="screen overlay">
+        <div class="gameover-card">
+            <h2 class="gameover-title">GAME OVER</h2>
+            <div class="gameover-dog" id="gameoverDog">🐕</div>
+            <div class="gameover-stats">
+                <div class="stat-row">
+                    <span class="stat-label">Distance</span>
+                    <span class="stat-value" id="goDistance">0m</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Score</span>
+                    <span class="stat-value" id="goScore">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Bones</span>
+                    <span class="stat-value" id="goBones">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Best Combo</span>
+                    <span class="stat-value" id="goCombo">x0</span>
+                </div>
+            </div>
+            <div id="newRecord" class="new-record" style="display:none">⭐ NEW RECORD! ⭐</div>
+            <div class="gameover-buttons">
+                <button id="retryBtn" class="btn btn-play">🔄 Try Again</button>
+                <button id="menuBtn" class="btn btn-secondary">🏠 Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Overlay -->
+    <div id="tutorial" class="screen overlay">
+        <div class="tutorial-card">
+            <h2>How to Play</h2>
+            <div class="tutorial-controls">
+                <div class="control-item"><span class="key">←→</span> or <span class="key">A/D</span> Change Lane</div>
+                <div class="control-item"><span class="key">↑</span> or <span class="key">W</span> Jump</div>
+                <div class="control-item"><span class="key">↓</span> or <span class="key">S</span> Slide</div>
+                <div class="control-item"><span class="key">Swipe</span> Touch Controls</div>
+            </div>
+            <button id="tutorialClose" class="btn btn-play">Got it! 🐾</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
